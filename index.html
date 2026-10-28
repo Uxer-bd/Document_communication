@@ -67,38 +67,39 @@
 
     <header>
         <div class="title" id="doc-title">Chargement...</div>
-        <!-- Le lien et le fichier s'adapteront dynamiquement -->
         <a id="download-btn" href="#" download class="btn-download">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 0 0-.708.708l3 3z"/>
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 0 0-.708.708l3 3 z"/>
             </svg>
             Télécharger
         </a>
     </header>
 
     <div class="viewer-container">
-        <!-- Affichage dynamique du PDF dans la page -->
+        <!-- Visionneuse compatible mobile -->
         <iframe id="pdf-frame" src="" type="application/pdf"></iframe>
     </div>
 
     <script>
-        // Associez chaque identifiant à son fichier PDF et à son titre
         const documents = {
             "1": { file: "doc-1.pdf", title: "Conditions Générales GIZ" },
             "2": { file: "doc-2.pdf", title: "Guide d'utilisation & Sécurité" },
             "3": { file: "doc-3.pdf", title: "Catalogue / Fiche Technique" }
         };
 
-        // Récupération du paramètre "doc" dans l'URL (ex: ?doc=3)
         const urlParams = new URLSearchParams(window.location.search);
-        const docId = urlParams.get('doc') || "1"; // Par défaut, affiche le doc 1 si aucun paramètre
-
-        // Sélection du document correspondant (ou repli sur le doc 1 par sécurité)
+        const docId = urlParams.get('doc') || "1";
         const currentDoc = documents[docId] || documents["1"];
 
-        // Injection dynamique dans votre structure HTML existante
-        document.getElementById('pdf-frame').src = currentDoc.file + '#toolbar=0';
+        // Construction de l'URL absolue du fichier PDF sur GitHub Pages
+        const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/';
+        const fileAbsoluteUrl = baseUrl + currentDoc.file;
+
+        // Utilisation de la visionneuse Google pour forcer l'affichage propre sur mobile
+        const viewerUrl = "https://docs.google.com/viewer?url=" + encodeURIComponent(fileAbsoluteUrl) + "&embedded=true";
+
+        document.getElementById('pdf-frame').src = viewerUrl;
         document.getElementById('doc-title').textContent = currentDoc.title;
         document.getElementById('download-btn').href = currentDoc.file;
     </script>
