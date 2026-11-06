@@ -19,34 +19,62 @@
         }
         header {
             background-color: #ffffff;
-            padding: 12px 20px;
+            padding: 10px 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 10;
+            gap: 10px;
+        }
+        .left-side {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 55%;
         }
         .title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #1a1a1a;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 60%;
+        }
+        /* Style du sélecteur de langue */
+        .lang-switcher {
+            display: flex;
+            gap: 6px;
+        }
+        .lang-btn {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #d1d5db;
+            color: #4b5563;
+            background-color: #f9fafb;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background-color: #0066cc;
+            color: #ffffff;
+            border-color: #0066cc;
         }
         .btn-download {
             background-color: #0066cc;
             color: #ffffff;
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: background-color 0.2s;
+            white-space: nowrap;
         }
         .btn-download:hover {
             background-color: #0052a3;
@@ -66,9 +94,17 @@
 <body>
 
     <header>
-        <div class="title" id="doc-title">Chargement...</div>
+        <div class="left-side">
+            <div class="title" id="doc-title">Chargement...</div>
+            <!-- Sélecteur de langue interactif -->
+            <div class="lang-switcher">
+                <a href="?doc=1" id="btn-fr" class="lang-btn">🇫🇷 Français</a>
+                <a href="?doc=2" id="btn-en" class="lang-btn">🇬🇧 English</a>
+            </div>
+        </div>
+
         <a id="download-btn" href="#" download class="btn-download">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                 <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 0 0-.708.708l3 3 z"/>
             </svg>
@@ -77,31 +113,36 @@
     </header>
 
     <div class="viewer-container">
-        <!-- Visionneuse compatible mobile -->
         <iframe id="pdf-frame" src="" type="application/pdf"></iframe>
     </div>
 
     <script>
+        // Définition de vos deux documents (Français et Anglais)
         const documents = {
-            "1": { file: "doc-1.pdf", title: "Conditions Générales GIZ" },
-            "2": { file: "doc-2.pdf", title: "Guide d'utilisation & Sécurité" },
-            "3": { file: "doc-3.pdf", title: "Catalogue / Fiche Technique" }
+            "1": { file: "doc-1.pdf", title: "Centre Kamalpha (Français)" },
+            "2": { file: "doc-2.pdf", title: "Kamalpha Center (English)" }
         };
 
         const urlParams = new URLSearchParams(window.location.search);
-        const docId = urlParams.get('doc') || "1";
+        const docId = urlParams.get('doc') || "1"; // Par défaut doc=1 si scanné directement
         const currentDoc = documents[docId] || documents["1"];
 
-        // Construction de l'URL absolue du fichier PDF sur GitHub Pages
+        // Construction de l'URL absolue pour la visionneuse Google Mobile
         const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/';
         const fileAbsoluteUrl = baseUrl + currentDoc.file;
-
-        // Utilisation de la visionneuse Google pour forcer l'affichage propre sur mobile
         const viewerUrl = "https://docs.google.com/viewer?url=" + encodeURIComponent(fileAbsoluteUrl) + "&embedded=true";
 
+        // Application des éléments dans la page
         document.getElementById('pdf-frame').src = viewerUrl;
         document.getElementById('doc-title').textContent = currentDoc.title;
         document.getElementById('download-btn').href = currentDoc.file;
+
+        // Activation visuelle du bouton de langue correspondant
+        if (docId === "2") {
+            document.getElementById('btn-en').classList.add('active');
+        } else {
+            document.getElementById('btn-fr').classList.add('active');
+        }
     </script>
 
 </body>
